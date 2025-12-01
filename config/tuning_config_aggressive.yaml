@@ -1,0 +1,83 @@
+# ARES7-Best Tuning Configuration - Aggressive
+# ==============================================
+# 목표: 최대 성과 개선 (Sharpe 1.85 → 2.45+)
+# 리스크: 높음
+# MDD: -15% 이내 허용
+
+# Enable/Disable Axes
+enable_tc_model: true
+enable_risk_scaler: true
+enable_qm_overlay: true
+enable_vix_guard: true
+
+# Axis 1: Transaction Cost Model
+transaction_cost:
+  base_bps: 1.5           # 낙관적 비용 (최적 체결 가정)
+  vol_coeff: 0.8
+  adv_coeff: 4.0
+  min_cost_bps: 0.5
+  max_cost_bps: 50.0
+
+# Axis 2: Global Risk Scaler
+risk_scaler:
+  target_vol: 0.12        # 높은 변동성 목표 (12%)
+  lookback_days: 42       # 짧은 lookback (빠른 반응)
+  max_leverage: 2.5       # 높은 최대 레버리지
+  min_leverage: 0.5
+  enable_dd_reduction: true
+  dd_threshold_1: -0.12   # -12% DD에서 축소 (늦게)
+  dd_threshold_2: -0.18   # -18% DD에서 추가 축소
+  dd_reduction_1: 0.70    # 70%로 축소
+  dd_reduction_2: 0.40    # 40%로 축소
+  use_kelly: true         # Kelly fraction 사용
+  kelly_fraction: 0.5
+
+# Axis 3: Quality+Momentum Overlay
+quality_momentum_overlay:
+  top_frac: 0.15          # 상위 15% (더 넓게)
+  bottom_frac: 0.15       # 하위 15%
+  overlay_strength: 0.30  # 높은 오버레이 강도 (30%)
+  rebalance_freq: "M"     # 월간 리밸런싱
+  quality_weight: 0.4     # 모멘텀 중시
+  momentum_weight: 0.6
+  use_roe: true
+  use_ebitda_margin: true
+  use_debt_equity: true
+  momentum_periods: [63, 126, 252]  # 3M, 6M, 12M (더 다양)
+
+# Axis 4: VIX Global Guard
+vix_guard:
+  enabled: true
+  level_reduce_1: 30.0    # 높은 임계값 (늦게 발동)
+  level_reduce_2: 35.0
+  level_reduce_3: 40.0
+  reduce_factor_1: 0.70   # 70% (덜 축소)
+  reduce_factor_2: 0.40   # 40%
+  reduce_factor_3: 0.20   # 20%
+  enable_spike_detection: true
+  spike_zscore_threshold: 2.5  # 높은 임계값 (덜 민감)
+  spike_reduction_factor: 0.60  # 60%로 축소
+  spike_lookback: 42
+
+# Backtest Settings
+backtest:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+  initial_capital: 1000000
+  rebalance_freq: "M"     # 월간 리밸런싱
+
+# Expected Performance
+expected:
+  sharpe_improvement: 0.60  # +0.60 Sharpe
+  target_sharpe: 2.45       # 1.85 + 0.60
+  target_mdd: -0.15         # -15% 이내
+  
+# Notes
+notes: |
+  Aggressive 설정:
+  - 높은 레버리지 (2.5x max)
+  - 높은 변동성 목표 (12%)
+  - 늦은 VIX Guard 발동 (30+)
+  - Kelly fraction 사용
+  - 예상 Sharpe: 2.45 (공격적)
+  - MDD 증가 가능성 있음

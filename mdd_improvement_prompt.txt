@@ -1,0 +1,43 @@
+당신은 퀀트 전략 최적화 전문가입니다. 다음 상황에서 MDD(Maximum Drawdown)를 개선할 수 있는 구체적인 방안과 Python 소스코드를 제시해주세요.
+
+## 현재 상황
+
+**ARES7 QM Regime v2 전략 성능 (실제 데이터 기준):**
+- Sharpe Ratio: 2.83 (목표: 3.50+)
+- 연율화 수익률: 58.59%
+- 연율화 변동성: 20.72%
+- **MDD: -23.62%** (목표: -10% 이하)
+- CVaR (95%): 0.0227
+
+**전략 구성:**
+- 3개 엔진 앙상블: QM Overlay (Sharpe 2.41), LowVol (Sharpe 0.75), Defensive (Sharpe 1.97)
+- Regime별 동적 가중치: BULL 레짐에서는 QM 100%, BEAR 레짐에서는 QM 60% + Defensive 40%
+- CVaR 기반 weight optimizer 적용
+
+## 요구사항
+
+1. **Sharpe Ratio와 연율화 수익률을 거의 감소시키지 않으면서** MDD를 -10% 이하로 개선하는 방법을 제시해주세요.
+2. 다음 기법 중 효과적인 것을 선택하거나, 새로운 기법을 제안해주세요:
+   - Dynamic Position Sizing (변동성/드로다운 기반)
+   - Trailing Stop-Loss with Adaptive Threshold
+   - Volatility Targeting
+   - Risk Parity Rebalancing
+   - CPPI (Constant Proportion Portfolio Insurance)
+   - Time-Series Momentum Filter
+   - Drawdown-Based Regime Switch
+   - 기타 혁신적인 방법
+
+3. **즉시 사용 가능한 Python 소스코드**를 제공해주세요:
+   - 입력: 일간 수익률 Series (pandas.Series)
+   - 출력: MDD 개선된 일간 수익률 Series
+   - 백테스트 가능한 완전한 함수 형태
+
+4. 제안하는 기법의 **이론적 근거**와 **예상 효과**를 간단히 설명해주세요.
+
+## 제약사항
+
+- 룩어헤드 바이어스(Look-ahead bias) 없이 실시간 거래 가능해야 함
+- 과도한 거래 비용 발생 방지 (턴오버 최소화)
+- 기존 앙상블 프레임워크와 호환 가능해야 함
+
+위 요구사항을 충족하는 **가장 효과적인 1-2개 기법**과 **구체적인 Python 코드**를 제시해주세요.

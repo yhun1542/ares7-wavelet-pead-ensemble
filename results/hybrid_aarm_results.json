@@ -1,0 +1,18 @@
+{
+  "timestamp": "2025-11-28T10:32:06.598096",
+  "optimal_params": {
+    "base": 1.0,
+    "max": 1.5,
+    "vol": 0.18,
+    "cb_trigger": -0.08
+  },
+  "performance_full": {
+    "annualized_return": 0.6836583554630631,
+    "annualized_volatility": 0.20223832493475094,
+    "sharpe_ratio": 3.3804589495271724,
+    "sortino_ratio": 5.5375476814125495,
+    "max_drawdown": -0.14610948624960957,
+    "cvar_95": -0.02367969308855856
+  },
+  "circuit_breaker_activation_rate": 0.028092243186582808
+}

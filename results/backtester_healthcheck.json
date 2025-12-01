@@ -1,0 +1,21 @@
+{
+  "test_1_equal_weight": {
+    "sharpe": 0.9614379030455762,
+    "annual_return": 0.16594988804726932,
+    "annual_volatility": 0.17260593484153766,
+    "max_drawdown": -0.32478622608933894,
+    "status": "PASS"
+  },
+  "test_2_zero_position": {
+    "total_return": 0.0,
+    "std_dev": 0.0,
+    "status": "PASS"
+  },
+  "test_3_momentum": {
+    "sharpe": NaN,
+    "annual_return": 0.0,
+    "annual_volatility": 0.0,
+    "max_drawdown": 0.0,
+    "status": "FAIL"
+  }
+}

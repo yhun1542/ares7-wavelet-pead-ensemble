@@ -1,0 +1,12 @@
+{
+  "timestamp": "20251201_054209",
+  "total_configs": 24,
+  "best_config": {
+    "budget": 0.1,
+    "horizon": 20,
+    "fee_rate": 0.0005,
+    "val_incr_sharpe": 0.02804621716499245,
+    "test_incr_sharpe": 0.0228869432803544,
+    "full_incr_sharpe": 0.009851693179272925
+  }
+}

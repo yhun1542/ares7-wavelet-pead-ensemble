@@ -1,0 +1,176 @@
+{
+  "parameter_space": {
+    "ensemble_weights": {
+      "description": "\uc559\uc0c1\ube14 \ub0b4 \uac01 \uc5d4\uc9c4(QM, LowVol, Defensive)\uc758 \uac00\uc911\uce58",
+      "type": "continuous",
+      "search_method": "grid",
+      "grid": {
+        "qm_weight": [
+          0.3,
+          0.4,
+          0.5,
+          0.6,
+          0.7
+        ],
+        "lowvol_weight": [
+          0.1,
+          0.2,
+          0.3,
+          0.4
+        ],
+        "defensive_weight": [
+          0.1,
+          0.2,
+          0.3,
+          0.4
+        ]
+      },
+      "constraint": "sum = 1.0"
+    },
+    "cvar_optimization": {
+      "description": "CVaR \uae30\ubc18 \uac00\uc911\uce58 \ucd5c\uc801\ud654 \ud30c\ub77c\ubbf8\ud130",
+      "type": "continuous",
+      "search_method": "grid",
+      "grid": {
+        "cvar_lambda": [
+          0.0,
+          0.1,
+          0.2,
+          0.3,
+          0.5
+        ],
+        "confidence_level": [
+          0.9,
+          0.95,
+          0.99
+        ]
+      }
+    },
+    "aarm_parameters": {
+      "description": "Adaptive Asymmetric Risk Management \ud30c\ub77c\ubbf8\ud130",
+      "type": "continuous",
+      "search_method": "grid",
+      "grid": {
+        "base_leverage": [
+          0.8,
+          0.9,
+          1.0,
+          1.1,
+          1.2
+        ],
+        "max_leverage": [
+          1.3,
+          1.5,
+          1.8,
+          2.0,
+          2.2
+        ],
+        "target_volatility": [
+          0.12,
+          0.15,
+          0.18,
+          0.2
+        ],
+        "downside_vol_target": [
+          0.08,
+          0.1,
+          0.12
+        ],
+        "upside_vol_target": [
+          0.2,
+          0.25,
+          0.3
+        ]
+      }
+    },
+    "circuit_breaker": {
+      "description": "Circuit Breaker \ud30c\ub77c\ubbf8\ud130",
+      "type": "continuous",
+      "search_method": "grid",
+      "grid": {
+        "trigger_threshold": [
+          -0.07,
+          -0.08,
+          -0.09,
+          -0.1
+        ],
+        "reduction_factor": [
+          0.3,
+          0.4,
+          0.5,
+          0.6
+        ],
+        "recovery_threshold": [
+          -0.03,
+          -0.04,
+          -0.05
+        ]
+      }
+    },
+    "regime_detection": {
+      "description": "\ub808\uc9d0 \uac10\uc9c0 \ud30c\ub77c\ubbf8\ud130",
+      "type": "continuous",
+      "search_method": "grid",
+      "grid": {
+        "lookback_window": [
+          20,
+          40,
+          60,
+          80
+        ],
+        "volatility_threshold": [
+          1.2,
+          1.5,
+          2.0
+        ]
+      }
+    }
+  },
+  "grid_search_strategy": {
+    "phase_1": {
+      "name": "\uc559\uc0c1\ube14 \uac00\uc911\uce58 \ucd5c\uc801\ud654",
+      "parameters": [
+        "ensemble_weights"
+      ],
+      "estimated_combinations": 80,
+      "priority": "high"
+    },
+    "phase_2": {
+      "name": "CVaR \ucd5c\uc801\ud654",
+      "parameters": [
+        "cvar_optimization"
+      ],
+      "estimated_combinations": 15,
+      "priority": "high"
+    },
+    "phase_3": {
+      "name": "AARM \ud30c\ub77c\ubbf8\ud130 \ucd5c\uc801\ud654",
+      "parameters": [
+        "aarm_parameters"
+      ],
+      "estimated_combinations": 900,
+      "priority": "medium",
+      "sampling": "random_search",
+      "n_samples": 100
+    },
+    "phase_4": {
+      "name": "Circuit Breaker \ucd5c\uc801\ud654",
+      "parameters": [
+        "circuit_breaker"
+      ],
+      "estimated_combinations": 48,
+      "priority": "medium"
+    },
+    "phase_5": {
+      "name": "\uc804\uccb4 \ud1b5\ud569 \ucd5c\uc801\ud654",
+      "parameters": [
+        "ensemble_weights",
+        "cvar_optimization",
+        "aarm_parameters",
+        "circuit_breaker"
+      ],
+      "method": "best_from_each_phase + fine_tuning",
+      "priority": "critical"
+    }
+  }
+}

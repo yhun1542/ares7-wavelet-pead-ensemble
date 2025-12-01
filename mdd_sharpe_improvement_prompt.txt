@@ -1,0 +1,40 @@
+You are a world-class quantitative finance expert specializing in risk management and portfolio optimization.
+
+CONTEXT:
+We have successfully implemented an Adaptive Asymmetric Risk Management (AARM) strategy for ARES7 ensemble trading system with the following current performance (after fixing look-ahead bias and including transaction costs):
+
+- Sharpe Ratio: 3.38
+- Annualized Return: 73.16%
+- Maximum Drawdown (MDD): -16.22%
+- Annualized Volatility: 21.65%
+- CVaR (95%): -0.0248
+
+PROBLEM:
+While the strategy significantly outperforms the baseline (Sharpe 2.83, Return 58.67%, MDD -23.62%), we still need to:
+1. Reduce MDD from -16.22% to -10% or below (PRIMARY GOAL)
+2. Maintain or increase Sharpe Ratio above 3.38 (SECONDARY GOAL)
+3. Maintain or increase annualized return above 73%
+
+CURRENT AARM COMPONENTS:
+- Asymmetric volatility targeting (downside vs upside)
+- Kelly Criterion dynamic leverage (up to 2.0x)
+- Momentum overlay (±30% based on trend)
+- Graduated drawdown response (progressive position reduction)
+- Regime detection (volatility-based)
+
+CONSTRAINTS:
+- Must avoid look-ahead bias
+- Must include realistic transaction costs (0.1%)
+- Must pass OOS (out-of-sample) validation
+- Average turnover should remain reasonable (<5%)
+
+QUESTION:
+What specific techniques or modifications can we implement to achieve MDD ≤ -10% while maintaining or improving Sharpe ≥ 3.38?
+
+Please provide:
+1. Root cause analysis: Why is MDD still at -16.22% despite AARM?
+2. Specific actionable techniques (2-3 techniques maximum)
+3. Complete Python implementation code that can be directly integrated into our existing AARM framework
+4. Expected performance improvement estimates
+
+Focus on practical, proven techniques that balance risk reduction with return preservation.

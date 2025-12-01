@@ -1,0 +1,64 @@
+{
+  "best_config": {
+    "overlay_strength": 0.04,
+    "top_frac": 0.2,
+    "bottom_frac": 0.2
+  },
+  "exposure_scale": 0.5558958806852775,
+  "target_vol": 0.12,
+  "full_sample": {
+    "baseline": {
+      "sharpe": 1.8535722886585928,
+      "sortino": 2.8297841732801357,
+      "ann_return": 0.1796416740689758,
+      "ann_vol": 0.09691646512420632,
+      "max_dd": -0.087249040276417,
+      "calmar": 2.058953009681782
+    },
+    "balanced": {
+      "sharpe": 2.3272510101968242,
+      "sortino": 3.6678082817354816,
+      "ann_return": 0.27927011251449585,
+      "ann_vol": 0.11999999625776377,
+      "max_dd": -0.12949955463409424,
+      "calmar": 2.1565334796905518
+    }
+  },
+  "oos_results": {
+    "train": {
+      "baseline_sharpe": 1.9537624702336644,
+      "balanced_sharpe": 3.0127285773391095,
+      "delta_sharpe": 1.058966107105445,
+      "balanced_vol": 0.07468817301248236,
+      "balanced_mdd": -0.07087785005569458
+    },
+    "oos1": {
+      "baseline_sharpe": 2.3150970310572236,
+      "balanced_sharpe": 1.8825079354942484,
+      "delta_sharpe": -0.4325890955629752,
+      "balanced_vol": 0.1471698650315234,
+      "balanced_mdd": -0.18999266624450684
+    },
+    "oos2": {
+      "baseline_sharpe": 1.6227575710763704,
+      "balanced_sharpe": 2.3695794716954675,
+      "delta_sharpe": 0.746821900619097,
+      "balanced_vol": 0.09608284815356767,
+      "balanced_mdd": -0.07703036069869995
+    },
+    "oos3": {
+      "baseline_sharpe": 1.2243614208205102,
+      "balanced_sharpe": 1.6989507843589131,
+      "delta_sharpe": 0.47458936353840286,
+      "balanced_vol": 0.09205474334770128,
+      "balanced_mdd": -0.0812637209892273
+    }
+  },
+  "overfitting": {
+    "train_sharpe": 3.0127285773391095,
+    "oos_min_sharpe": 1.6989507843589131,
+    "oos_avg_sharpe": 1.9836793971828763,
+    "degradation": 1.0290491801562331,
+    "degradation_pct": 34.156717199698946
+  }
+}

@@ -1,0 +1,81 @@
+# ARES7-Best Tuning Configuration - Moderate
+# ===========================================
+# 목표: 균형잡힌 성과 개선 (Sharpe 1.85 → 2.30)
+# 리스크: 중간
+# MDD: -12% 이내 유지
+
+# Enable/Disable Axes
+enable_tc_model: true
+enable_risk_scaler: true
+enable_qm_overlay: true
+enable_vix_guard: true
+
+# Axis 1: Transaction Cost Model
+transaction_cost:
+  base_bps: 2.0           # 현실적 비용
+  vol_coeff: 1.0
+  adv_coeff: 5.0
+  min_cost_bps: 1.0
+  max_cost_bps: 50.0
+
+# Axis 2: Global Risk Scaler
+risk_scaler:
+  target_vol: 0.10        # 중간 변동성 목표 (10%)
+  lookback_days: 63       # 3개월 lookback
+  max_leverage: 2.0       # 중간 최대 레버리지
+  min_leverage: 0.5
+  enable_dd_reduction: true
+  dd_threshold_1: -0.10   # -10% DD에서 축소
+  dd_threshold_2: -0.15   # -15% DD에서 추가 축소
+  dd_reduction_1: 0.75    # 75%로 축소
+  dd_reduction_2: 0.50    # 50%로 축소
+  use_kelly: false
+
+# Axis 3: Quality+Momentum Overlay
+quality_momentum_overlay:
+  top_frac: 0.10          # 상위 10%
+  bottom_frac: 0.10       # 하위 10%
+  overlay_strength: 0.20  # 중간 오버레이 강도 (20%)
+  rebalance_freq: "M"     # 월간 리밸런싱
+  quality_weight: 0.5     # 품질/모멘텀 균형
+  momentum_weight: 0.5
+  use_roe: true
+  use_ebitda_margin: true
+  use_debt_equity: true
+  momentum_periods: [126, 252]  # 6M, 12M
+
+# Axis 4: VIX Global Guard
+vix_guard:
+  enabled: true
+  level_reduce_1: 25.0    # 중간 임계값
+  level_reduce_2: 30.0
+  level_reduce_3: 35.0
+  reduce_factor_1: 0.75   # 75%
+  reduce_factor_2: 0.50   # 50%
+  reduce_factor_3: 0.25   # 25%
+  enable_spike_detection: true
+  spike_zscore_threshold: 2.0  # 중간 임계값
+  spike_reduction_factor: 0.50  # 50%로 축소
+  spike_lookback: 63
+
+# Backtest Settings
+backtest:
+  start_date: "2015-01-01"
+  end_date: "2024-12-31"
+  initial_capital: 1000000
+  rebalance_freq: "M"     # 월간 리밸런싱
+
+# Expected Performance
+expected:
+  sharpe_improvement: 0.45  # +0.45 Sharpe
+  target_sharpe: 2.30       # 1.85 + 0.45
+  target_mdd: -0.12         # -12% 이내
+  
+# Notes
+notes: |
+  Moderate 설정:
+  - 중간 레버리지 (2.0x max)
+  - 중간 변동성 목표 (10%)
+  - 표준 VIX Guard (25+)
+  - 월간 리밸런싱
+  - 예상 Sharpe: 2.30 (균형)

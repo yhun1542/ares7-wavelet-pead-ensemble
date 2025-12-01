@@ -1,0 +1,112 @@
+{
+  "timestamp": "2025-11-28T10:18:19.099969",
+  "optimal_params": {
+    "base_leverage": 1.1,
+    "max_leverage": 2.0,
+    "target_vol": 0.18
+  },
+  "performance_before": {
+    "annualized_return": 0.5867237566281611,
+    "annualized_volatility": 0.20722288504310932,
+    "sharpe_ratio": 2.831365640460526,
+    "sortino_ratio": 4.649384593474993,
+    "max_drawdown": -0.23619915473174513,
+    "cvar_95": -0.02273236119241822,
+    "total_return": 87.33562131767124
+  },
+  "performance_after": {
+    "annualized_return": 1.1143819240414747,
+    "annualized_volatility": 0.22159983106675676,
+    "sharpe_ratio": 5.028803129844301,
+    "sortino_ratio": 8.932698238575341,
+    "max_drawdown": -0.09981802013773265,
+    "cvar_95": -0.02456873697741796,
+    "total_return": 1432.3227656609367
+  },
+  "all_param_results": [
+    {
+      "annualized_return": 1.0263554461766753,
+      "annualized_volatility": 0.21531099848327925,
+      "sharpe_ratio": 4.766850989529829,
+      "sortino_ratio": 8.450275208095599,
+      "max_drawdown": -0.09888143830413271,
+      "cvar_95": -0.023914157014128763,
+      "total_return": 947.6128256966149,
+      "params": {
+        "base_leverage": 1.0,
+        "max_leverage": 1.8,
+        "target_vol": 0.2
+      }
+    },
+    {
+      "annualized_return": 1.1801680669387355,
+      "annualized_volatility": 0.2376999994900981,
+      "sharpe_ratio": 4.964947704965805,
+      "sortino_ratio": 8.799317593957806,
+      "max_drawdown": -0.10867643284439787,
+      "cvar_95": -0.02640456960939523,
+      "total_return": 1928.7537456978907,
+      "params": {
+        "base_leverage": 1.1,
+        "max_leverage": 2.0,
+        "target_vol": 0.2
+      }
+    },
+    {
+      "annualized_return": 1.3444099962052958,
+      "annualized_volatility": 0.2600684365651575,
+      "sharpe_ratio": 5.1694469884986125,
+      "sortino_ratio": 9.160000141333528,
+      "max_drawdown": -0.11838825378962348,
+      "cvar_95": -0.028893378299138937,
+      "total_return": 3904.4851868063065,
+      "params": {
+        "base_leverage": 1.2,
+        "max_leverage": 2.2,
+        "target_vol": 0.2
+      }
+    },
+    {
+      "annualized_return": 1.040903689519502,
+      "annualized_volatility": 0.2064794008393343,
+      "sharpe_ratio": 5.041198711775853,
+      "sortino_ratio": 9.007974993213475,
+      "max_drawdown": -0.09545548382962468,
+      "cvar_95": -0.022815704283208837,
+      "total_return": 1015.8232823046238,
+      "params": {
+        "base_leverage": 1.0,
+        "max_leverage": 2.0,
+        "target_vol": 0.18
+      }
+    },
+    {
+      "annualized_return": 1.179096795386549,
+      "annualized_volatility": 0.2374656342846233,
+      "sharpe_ratio": 4.96533655886097,
+      "sortino_ratio": 8.803264389101036,
+      "max_drawdown": -0.10867643284439787,
+      "cvar_95": -0.026362557787351974,
+      "total_return": 1919.5696031601512,
+      "params": {
+        "base_leverage": 1.0,
+        "max_leverage": 2.0,
+        "target_vol": 0.22
+      }
+    },
+    {
+      "annualized_return": 1.1143819240414747,
+      "annualized_volatility": 0.22159983106675676,
+      "sharpe_ratio": 5.028803129844301,
+      "sortino_ratio": 8.932698238575341,
+      "max_drawdown": -0.09981802013773265,
+      "cvar_95": -0.02456873697741796,
+      "total_return": 1432.3227656609367,
+      "params": {
+        "base_leverage": 1.1,
+        "max_leverage": 2.0,
+        "target_vol": 0.18
+      }
+    }
+  ]
+}

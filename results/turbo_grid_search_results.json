@@ -1,0 +1,330 @@
+{
+  "timestamp": "2025-11-28T10:37:40.100122",
+  "best_params": {
+    "base_leverage": 1.2,
+    "max_leverage": 1.8,
+    "target_volatility": 0.18,
+    "cb_trigger": -0.06,
+    "cb_reduction_factor": 0.4
+  },
+  "performance_train": {
+    "sharpe": 3.641490175198252,
+    "return": 0.6184755040033119,
+    "mdd": -0.12627317013685063,
+    "vol": 0.16984132161489093
+  },
+  "performance_test": {
+    "sharpe": 4.3735549026568625,
+    "return": 0.8231814372685982,
+    "mdd": -0.1010348199227082,
+    "vol": 0.18821792697023856
+  },
+  "performance_full": {
+    "sharpe": 3.85842526405867,
+    "return": 0.6773646565206899,
+    "mdd": -0.12627317013685063,
+    "vol": 0.1755546913997166
+  },
+  "top_20_results": [
+    {
+      "params": {
+        "base_leverage": 1.2,
+        "max_leverage": 1.8,
+        "target_volatility": 0.18,
+        "cb_trigger": -0.06,
+        "cb_reduction_factor": 0.4
+      },
+      "metrics": {
+        "sharpe": 3.641490175198252,
+        "return": 0.6184755040033119,
+        "mdd": -0.12627317013685063,
+        "vol": 0.16984132161489093
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.2,
+        "max_leverage": 2.2,
+        "target_volatility": 0.22,
+        "cb_trigger": -0.07,
+        "cb_reduction_factor": 0.5
+      },
+      "metrics": {
+        "sharpe": 3.6389219338640917,
+        "return": 0.7522856340316397,
+        "mdd": -0.1484973462655202,
+        "vol": 0.20673310604187764
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.2,
+        "max_leverage": 2.5,
+        "target_volatility": 0.22,
+        "cb_trigger": -0.06,
+        "cb_reduction_factor": 0.5
+      },
+      "metrics": {
+        "sharpe": 3.615714192513482,
+        "return": 0.7600559060227374,
+        "mdd": -0.14869855690003295,
+        "vol": 0.21020906674439904
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.1,
+        "max_leverage": 1.8,
+        "target_volatility": 0.18,
+        "cb_trigger": -0.06,
+        "cb_reduction_factor": 0.4
+      },
+      "metrics": {
+        "sharpe": 3.613634318651627,
+        "return": 0.5940780908400316,
+        "mdd": -0.11996827225672996,
+        "vol": 0.16439906156904743
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.1,
+        "max_leverage": 1.8,
+        "target_volatility": 0.22,
+        "cb_trigger": -0.06,
+        "cb_reduction_factor": 0.3
+      },
+      "metrics": {
+        "sharpe": 3.5817756553750955,
+        "return": 0.5947194011626205,
+        "mdd": -0.12038361836003553,
+        "vol": 0.16604038286712278
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.2,
+        "max_leverage": 2.2,
+        "target_volatility": 0.22,
+        "cb_trigger": -0.07,
+        "cb_reduction_factor": 0.6
+      },
+      "metrics": {
+        "sharpe": 3.5795840541597848,
+        "return": 0.776904972682628,
+        "mdd": -0.15524959653270395,
+        "vol": 0.21703777895082463
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.1,
+        "max_leverage": 1.8,
+        "target_volatility": 0.2,
+        "cb_trigger": -0.06,
+        "cb_reduction_factor": 0.4
+      },
+      "metrics": {
+        "sharpe": 3.5765520378033373,
+        "return": 0.6121588865337235,
+        "mdd": -0.1268709449380137,
+        "vol": 0.17115894863638054
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.2,
+        "max_leverage": 2.2,
+        "target_volatility": 0.22,
+        "cb_trigger": -0.07,
+        "cb_reduction_factor": 0.4
+      },
+      "metrics": {
+        "sharpe": 3.5653756848550193,
+        "return": 0.7036546206929934,
+        "mdd": -0.14051705643048176,
+        "vol": 0.19735777738148974
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.2,
+        "max_leverage": 2.5,
+        "target_volatility": 0.22,
+        "cb_trigger": -0.07,
+        "cb_reduction_factor": 0.5
+      },
+      "metrics": {
+        "sharpe": 3.564294457938464,
+        "return": 0.7433297304224524,
+        "mdd": -0.14869855690003297,
+        "vol": 0.20854891176762752
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.2,
+        "max_leverage": 2.5,
+        "target_volatility": 0.22,
+        "cb_trigger": -0.06,
+        "cb_reduction_factor": 0.7
+      },
+      "metrics": {
+        "sharpe": 3.5494896903236586,
+        "return": 0.8187914713642024,
+        "mdd": -0.16328828377529947,
+        "vol": 0.23067864476302824
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.1,
+        "max_leverage": 2.2,
+        "target_volatility": 0.18,
+        "cb_trigger": -0.06,
+        "cb_reduction_factor": 0.4
+      },
+      "metrics": {
+        "sharpe": 3.5488579120297605,
+        "return": 0.6044815530001448,
+        "mdd": -0.11996827225672926,
+        "vol": 0.17033129192101498
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.1,
+        "max_leverage": 2.5,
+        "target_volatility": 0.18,
+        "cb_trigger": -0.06,
+        "cb_reduction_factor": 0.4
+      },
+      "metrics": {
+        "sharpe": 3.5488579120297605,
+        "return": 0.6044815530001448,
+        "mdd": -0.11996827225672926,
+        "vol": 0.17033129192101498
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.2,
+        "max_leverage": 1.8,
+        "target_volatility": 0.2,
+        "cb_trigger": -0.06,
+        "cb_reduction_factor": 0.4
+      },
+      "metrics": {
+        "sharpe": 3.5479084801736267,
+        "return": 0.6258996460718069,
+        "mdd": -0.13138915279082705,
+        "vol": 0.1764136954404125
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.2,
+        "max_leverage": 2.2,
+        "target_volatility": 0.22,
+        "cb_trigger": -0.07,
+        "cb_reduction_factor": 0.7
+      },
+      "metrics": {
+        "sharpe": 3.544069809280649,
+        "return": 0.794684348033178,
+        "mdd": -0.1630815891207735,
+        "vol": 0.22422931567323656
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.2,
+        "max_leverage": 2.5,
+        "target_volatility": 0.2,
+        "cb_trigger": -0.07,
+        "cb_reduction_factor": 0.7
+      },
+      "metrics": {
+        "sharpe": 3.5435553825811867,
+        "return": 0.7853297496630867,
+        "mdd": -0.15622718053875828,
+        "vol": 0.22162197704697337
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.2,
+        "max_leverage": 2.2,
+        "target_volatility": 0.18,
+        "cb_trigger": -0.07,
+        "cb_reduction_factor": 0.4
+      },
+      "metrics": {
+        "sharpe": 3.542654923943366,
+        "return": 0.6421801869988757,
+        "mdd": -0.1266170331263309,
+        "vol": 0.1812708832177361
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.2,
+        "max_leverage": 2.5,
+        "target_volatility": 0.2,
+        "cb_trigger": -0.06,
+        "cb_reduction_factor": 0.5
+      },
+      "metrics": {
+        "sharpe": 3.539336727051446,
+        "return": 0.6996870202923802,
+        "mdd": -0.14316262917042785,
+        "vol": 0.197688740645843
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.2,
+        "max_leverage": 2.5,
+        "target_volatility": 0.22,
+        "cb_trigger": -0.06,
+        "cb_reduction_factor": 0.6
+      },
+      "metrics": {
+        "sharpe": 3.5393031427903376,
+        "return": 0.7778089743271916,
+        "mdd": -0.15545629744809134,
+        "vol": 0.2197633101622309
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.2,
+        "max_leverage": 2.5,
+        "target_volatility": 0.22,
+        "cb_trigger": -0.07,
+        "cb_reduction_factor": 0.7
+      },
+      "metrics": {
+        "sharpe": 3.5374829419568217,
+        "return": 0.8045394661752931,
+        "mdd": -0.16328828377529941,
+        "vol": 0.2274327479103681
+      }
+    },
+    {
+      "params": {
+        "base_leverage": 1.2,
+        "max_leverage": 2.5,
+        "target_volatility": 0.22,
+        "cb_trigger": -0.07,
+        "cb_reduction_factor": 0.4
+      },
+      "metrics": {
+        "sharpe": 3.53703888413412,
+        "return": 0.6997339518272057,
+        "mdd": -0.1408183054005143,
+        "vol": 0.19783043804408249
+      }
+    }
+  ]
+}

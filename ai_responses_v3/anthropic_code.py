@@ -1,0 +1,324 @@
+import numpy as np
+import pandas as pd
+from scipy import stats
+from typing import Tuple, Dict
+
+class EnhancedAARMStrategy:
+    """
+    Enhanced Adaptive Asymmetric Risk Management with MDD control
+    Target: MDD ≤ -10% while maintaining Sharpe ≥ 3.38
+    """
+    
+    def __init__(self, 
+                 target_mdd: float = 0.10,
+                 base_leverage: float = 1.0,
+                 max_leverage: float = 2.0,
+                 transaction_cost: float = 0.001):
+        
+        self.target_mdd = target_mdd
+        self.base_leverage = base_leverage
+        self.max_leverage = max_leverage
+        self.transaction_cost = transaction_cost
+        
+        # Dynamic Risk Budget parameters
+        self.risk_budget_window = 20
+        self.drawdown_velocity_threshold = 0.02  # 2% daily decay rate
+        self.risk_budget_floor = 0.3  # Minimum 30% of capital at risk
+        
+        # Adaptive Leverage Ceiling parameters
+        self.vol_fast_window = 10
+        self.vol_slow_window = 60
+        self.drawdown_memory_decay = 0.95  # Daily decay factor
+        
+    def calculate_dynamic_risk_budget(self, 
+                                     returns: pd.Series, 
+                                     current_drawdown: float) -> float:
+        """
+        Dynamic Risk Budget with Drawdown Prediction (DRB-DP)
+        Pre-emptively reduces exposure based on drawdown velocity and microstructure
+        """
+        if len(returns) < self.risk_budget_window:
+            return 1.0
+        
+        # 1. Calculate drawdown velocity (rate of capital decay)
+        recent_returns = returns.tail(self.risk_budget_window)
+        cumulative = (1 + recent_returns).cumprod()
+        
+        # Drawdown velocity: negative slope indicates accelerating losses
+        x = np.arange(len(cumulative))
+        slope, _, _, _, _ = stats.linregress(x, cumulative.values)
+        drawdown_velocity = -slope if slope < 0 else 0
+        
+        # 2. Microstructure stress indicator (using return autocorrelation as proxy)
+        # Negative autocorrelation suggests mean reversion, positive suggests trending losses
+        if len(returns) >= 50:
+            autocorr = returns.tail(20).autocorr(lag=1)
+            microstructure_stress = max(0, autocorr) * 0.5  # Scale factor
+        else:
+            microstructure_stress = 0
+        
+        # 3. Calculate predictive drawdown probability
+        # Using historical drawdown transitions
+        if len(returns) >= 100:
+            rolling_dd = self._calculate_rolling_drawdowns(returns, window=20)
+            current_percentile = stats.percentileofscore(rolling_dd, current_drawdown)
+            
+            # If current DD is in top quartile of recent history, increase caution
+            dd_stress = max(0, (current_percentile - 75) / 25)  # 0 to 1 scale
+        else:
+            dd_stress = current_drawdown / self.target_mdd
+        
+        # 4. Combine factors for risk budget
+        total_stress = (drawdown_velocity / self.drawdown_velocity_threshold + 
+                       microstructure_stress + 
+                       dd_stress) / 3
+        
+        # Risk budget decreases exponentially with stress
+        risk_budget = max(self.risk_budget_floor, 
+                         1.0 - (total_stress ** 1.5) * (1 - self.risk_budget_floor))
+        
+        # Additional safety: sharp cutoff near target MDD
+        if current_drawdown > self.target_mdd * 0.7:
+            safety_factor = 1.0 - ((current_drawdown - self.target_mdd * 0.7) / 
+                                  (self.target_mdd * 0.3)) ** 2
+            risk_budget *= max(0.3, safety_factor)
+        
+        return risk_budget
+    
+    def calculate_adaptive_leverage_ceiling(self, 
+                                           returns: pd.Series,
+                                           current_drawdown: float,
+                                           time_since_peak: int) -> float:
+        """
+        Adaptive Leverage Ceiling with Volatility Term Structure (ALC-VTS)
+        Dynamically caps maximum leverage based on market conditions
+        """
+        if len(returns) < self.vol_slow_window:
+            return self.base_leverage
+        
+        # 1. Calculate volatility term structure
+        vol_fast = returns.tail(self.vol_fast_window).std() * np.sqrt(252)
+        vol_slow = returns.tail(self.vol_slow_window).std() * np.sqrt(252)
+        
+        # Volatility ratio: >1 means increasing volatility (risky)
+        vol_ratio = vol_fast / (vol_slow + 1e-6)
+        vol_stress = max(0, min(1, (vol_ratio - 1.0) / 0.5))  # Normalized to [0,1]
+        
+        # 2. Peak-to-trough stress with time decay
+        # Recent drawdowns have more impact, older ones decay
+        drawdown_impact = current_drawdown / self.target_mdd
+        time_decay_factor = self.drawdown_memory_decay ** time_since_peak
+        
+        ptt_stress = drawdown_impact * (1 + time_decay_factor) / 2
+        
+        # 3. Calculate maximum safe leverage
+        # Base case: full leverage when no stress
+        # Worst case: 50% of base leverage under maximum stress
+        combined_stress = (vol_stress * 0.6 + ptt_stress * 0.4)
+        
+        max_safe_leverage = self.max_leverage * (1 - combined_stress * 0.5)
+        
+        # 4. Additional regime-based adjustment
+        if len(returns) >= 100:
+            # Detect high volatility regime
+            historical_vol = returns.tail(252).std() * np.sqrt(252) if len(returns) >= 252 else vol_slow
+            if vol_fast > historical_vol * 1.5:
+                # High volatility regime: cap at base leverage
+                max_safe_leverage = min(max_safe_leverage, self.base_leverage)
+        
+        return max(0.5, min(self.max_leverage, max_safe_leverage))
+    
+    def calculate_position_size(self, 
+                               signal_strength: float,
+                               returns: pd.Series,
+                               current_prices: pd.Series,
+                               existing_position: float = 0) -> float:
+        """
+        Main position sizing function combining all risk management components
+        """
+        # 1. Calculate current drawdown and time since peak
+        current_drawdown, time_since_peak = self._calculate_current_drawdown(returns)
+        
+        # 2. Get dynamic risk budget
+        risk_budget = self.calculate_dynamic_risk_budget(returns, current_drawdown)
+        
+        # 3. Get adaptive leverage ceiling
+        max_leverage = self.calculate_adaptive_leverage_ceiling(
+            returns, current_drawdown, time_since_peak
+        )
+        
+        # 4. Calculate Kelly Criterion position (your existing implementation)
+        kelly_position = self._calculate_kelly_position(returns, signal_strength)
+        
+        # 5. Apply all constraints
+        # Start with Kelly position
+        target_position = kelly_position
+        
+        # Apply leverage ceiling
+        target_position = np.clip(target_position, -max_leverage, max_leverage)
+        
+        # Apply risk budget scaling
+        target_position *= risk_budget
+        
+        # 6. Smart rebalancing to reduce turnover
+        position_change = target_position - existing_position
+        
+        # Only rebalance if change is significant (reduces turnover)
+        if abs(position_change) < 0.05:  # 5% threshold
+            return existing_position
+        
+        # Smooth large position changes to reduce market impact
+        if abs(position_change) > 0.5:
+            # Implement 70% of large changes to smooth transitions
+            target_position = existing_position + position_change * 0.7
+        
+        return target_position
+    
+    def _calculate_current_drawdown(self, returns: pd.Series) -> Tuple[float, int]:
+        """Calculate current drawdown and time since peak"""
+        if len(returns) == 0:
+            return 0.0, 0
+        
+        cumulative = (1 + returns).cumprod()
+        running_max = cumulative.expanding().max()
+        drawdown = (cumulative - running_max) / running_max
+        
+        current_dd = drawdown.iloc[-1] if len(drawdown) > 0 else 0.0
+        
+        # Time since peak
+        peak_idx = cumulative.idxmax()
+        current_idx = cumulative.index[-1]
+        time_since_peak = (current_idx - peak_idx).days if hasattr(current_idx - peak_idx, 'days') else len(cumulative) - cumulative.argmax()
+        
+        return abs(current_dd), time_since_peak
+    
+    def _calculate_rolling_drawdowns(self, returns: pd.Series, window: int = 20) -> np.array:
+        """Calculate rolling maximum drawdowns for stress analysis"""
+        drawdowns = []
+        
+        for i in range(window, len(returns)):
+            window_returns = returns.iloc[i-window:i]
+            cumulative = (1 + window_returns).cumprod()
+            running_max = cumulative.expanding().max()
+            dd = ((cumulative - running_max) / running_max).min()
+            drawdowns.append(abs(dd))
+        
+        return np.array(drawdowns)
+    
+    def _calculate_kelly_position(self, returns: pd.Series, signal_strength: float) -> float:
+        """
+        Simplified Kelly Criterion calculation
+        (Replace with your existing implementation)
+        """
+        if len(returns) < 30:
+            return signal_strength * self.base_leverage
+        
+        # Calculate win rate and average win/loss
+        positive_returns = returns[returns > 0]
+        negative_returns = returns[returns < 0]
+        
+        if len(positive_returns) == 0 or len(negative_returns) == 0:
+            return signal_strength * self.base_leverage
+        
+        win_rate = len(positive_returns) / len(returns)
+        avg_win = positive_returns.mean()
+        avg_loss = abs(negative_returns.mean())
+        
+        # Kelly formula: f = (p*b - q) / b
+        # where p = win_rate, q = 1-p, b = avg_win/avg_loss
+        b = avg_win / avg_loss
+        kelly_fraction = (win_rate * b - (1 - win_rate)) / b
+        
+        # Apply Kelly with safety factor (typically 0.25 to 0.5)
+        kelly_fraction = kelly_fraction * 0.4
+        
+        # Scale by signal strength
+        return np.clip(kelly_fraction * signal_strength * 2, -self.max_leverage, self.max_leverage)
+    
+    def backtest_with_enhanced_risk(self, 
+                                   signals: pd.Series,
+                                   returns: pd.Series,
+                                   prices: pd.Series) -> Dict:
+        """
+        Backtest the enhanced risk management strategy
+        """
+        positions = pd.Series(index=returns.index, dtype=float)
+        portfolio_returns = pd.Series(index=returns.index, dtype=float)
+        
+        current_position = 0.0
+        
+        for i, date in enumerate(returns.index):
+            if i < 30:  # Need minimum history
+                positions.iloc[i] = 0
+                portfolio_returns.iloc[i] = 0
+                continue
+            
+            # Get historical data up to current point (no look-ahead)
+            hist_returns = returns.iloc[:i]
+            hist_prices = prices.iloc[:i] if prices is not None else None
+            
+            # Calculate position size
+            signal_strength = signals.iloc[i] if signals is not None else 1.0
+            
+            new_position = self.calculate_position_size(
+                signal_strength=signal_strength,
+                returns=hist_returns,
+                current_prices=hist_prices,
+                existing_position=current_position
+            )
+            
+            # Calculate returns including transaction costs
+            position_change = new_position - current_position
+            transaction_cost = abs(position_change) * self.transaction_cost
+            
+            # Portfolio return for this period
+            portfolio_return = current_position * returns.iloc[i] - transaction_cost
+            
+            # Store results
+            positions.iloc[i] = new_position
+            portfolio_returns.iloc[i] = portfolio_return
+            current_position = new_position
+        
+        # Calculate performance metrics
+        metrics = self._calculate_performance_metrics(portfolio_returns)
+        metrics['positions'] = positions
+        metrics['returns'] = portfolio_returns
+        
+        return metrics
+    
+    def _calculate_performance_metrics(self, returns: pd.Series) -> Dict:
+        """Calculate comprehensive performance metrics"""
+        # Clean returns
+        returns_clean = returns.dropna()
+        
+        if len(returns_clean) == 0:
+            return {}
+        
+        # Basic metrics
+        total_return = (1 + returns_clean).prod() - 1
+        annualized_return = (1 + total_return) ** (252 / len(returns_clean)) - 1
+        
+        # Risk metrics
+        volatility = returns_clean.std() * np.sqrt(252)
+        sharpe_ratio = annualized_return / volatility if volatility > 0 else 0
+        
+        # Drawdown
+        cumulative = (1 + returns_clean).cumprod()
+        running_max = cumulative.expanding().max()
+        drawdown = (cumulative - running_max) / running_max
+        max_drawdown = drawdown.min()
+        
+        # CVaR
+        cvar_95 = returns_clean.quantile(0.05)
+        
+        # Turnover
+        # (This would need position data to calculate properly)
+        
+        return {
+            'sharpe_ratio': sharpe_ratio,
+            'annualized_return': annualized_return,
+            'max_drawdown': max_drawdown,
+            'volatility': volatility,
+            'cvar_95': cvar_95,
+            'total_return': total_return
+        }

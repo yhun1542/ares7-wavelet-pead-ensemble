@@ -1,0 +1,13 @@
+Wavelet + PEAD Overlay Weight Optimization
+================================================================================
+
+Optimization method: Sigma^-1 mu
+w_wavelet : 0.539903
+w_pead    : 0.460097
+
+Train+Val Sharpe: 1.764618
+
+Test Performance:
+  Overlay Test Sharpe: 0.775284
+  Base Test Sharpe: 0.607794
+  Base+Overlay Test Sharpe: 0.989866

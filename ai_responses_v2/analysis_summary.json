@@ -1,0 +1,46 @@
+{
+  "openai_gpt4": {
+    "code_blocks_count": 1,
+    "response_length": 4389,
+    "root_cause_snippet": "Not clearly identified",
+    "proposed_techniques": [
+      "Asymmetric Position Sizing",
+      "Trend-Following Overlay",
+      "Dynamic Leverage"
+    ],
+    "has_code": true
+  },
+  "anthropic_claude": {
+    "code_blocks_count": 1,
+    "response_length": 14372,
+    "root_cause_snippet": "The 13% return reduction occurred because the current MDD improvement techniques are overly conservative:",
+    "proposed_techniques": [
+      "Asymmetric Position Sizing",
+      "Trend-Following Overlay",
+      "Dynamic Leverage"
+    ],
+    "has_code": true
+  },
+  "google_gemini": {
+    "code_blocks_count": 1,
+    "response_length": 14426,
+    "root_cause_snippet": "The most likely reason for the significant drop in annualized returns after implementing volatility targeting and drawdown-based regime switching is **reduced exposure to the market during periods of ",
+    "proposed_techniques": [
+      "Asymmetric Position Sizing",
+      "Trend-Following Overlay",
+      "Dynamic Leverage"
+    ],
+    "has_code": true
+  },
+  "xai_grok": {
+    "code_blocks_count": 1,
+    "response_length": 7722,
+    "root_cause_snippet": "The significant drop in annualized return (from 58.59% to 45.55%) after implementing MDD improvement techniques can be attributed to:",
+    "proposed_techniques": [
+      "Asymmetric Position Sizing",
+      "Trend-Following Overlay",
+      "Dynamic Leverage"
+    ],
+    "has_code": true
+  }
+}

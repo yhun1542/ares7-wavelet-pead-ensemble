@@ -1,0 +1,53 @@
+{
+  "baseline": {
+    "sharpe": 2.2638,
+    "return": 0.1642
+  },
+  "turnover": {
+    "regime": 0.4,
+    "vol_target": 0.15,
+    "total": 0.55
+  },
+  "cost_scenarios": {
+    "Conservative": {
+      "commission": 0.001,
+      "slippage": 0.0015,
+      "market_impact": 0.001,
+      "total": 0.0035
+    },
+    "Moderate": {
+      "commission": 0.0005,
+      "slippage": 0.001,
+      "market_impact": 0.0005,
+      "total": 0.002
+    },
+    "Optimistic": {
+      "commission": 0.0003,
+      "slippage": 0.0005,
+      "market_impact": 0.0002,
+      "total": 0.001
+    }
+  },
+  "cost_results": {
+    "Conservative": {
+      "annual_cost": 0.0019250000000000003,
+      "adjusted_sharpe": 2.2372603227771006,
+      "adjusted_return": 0.162275,
+      "return_impact": 0.00192500000000001
+    },
+    "Moderate": {
+      "annual_cost": 0.0011,
+      "adjusted_sharpe": 2.2486344701583434,
+      "adjusted_return": 0.16310000000000002,
+      "return_impact": 0.0010999999999999899
+    },
+    "Optimistic": {
+      "annual_cost": 0.00055,
+      "adjusted_sharpe": 2.2562172350791716,
+      "adjusted_return": 0.16365000000000002,
+      "return_impact": 0.0005499999999999949
+    }
+  },
+  "moderate_sharpe": 2.2486344701583434,
+  "sharpe_2_achieved_after_costs": true
+}

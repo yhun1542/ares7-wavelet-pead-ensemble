@@ -1,0 +1,76 @@
+{
+  "turnover": {
+    "engines": {
+      "A+LS": 0.15,
+      "C1": 0.2,
+      "LV2": 0.1,
+      "Factor": 0.25,
+      "FV2_1": 0.3,
+      "FV2_2": 0.3,
+      "FV2_3": 0.3
+    },
+    "ensemble": 0.24739999999999998
+  },
+  "cost_scenarios": {
+    "Conservative": {
+      "commission": 0.001,
+      "slippage": 0.0015,
+      "market_impact": 0.001,
+      "total": 0.0035
+    },
+    "Moderate": {
+      "commission": 0.0005,
+      "slippage": 0.001,
+      "market_impact": 0.0005,
+      "total": 0.002
+    },
+    "Optimistic": {
+      "commission": 0.0003,
+      "slippage": 0.0005,
+      "market_impact": 0.0002,
+      "total": 0.001
+    }
+  },
+  "impact_analysis": {
+    "Conservative": {
+      "metrics": {
+        "sharpe": 1.8831948286719542,
+        "return": 0.13733662185948092,
+        "vol": 0.06963899175486933,
+        "mdd": -0.06451215568580575
+      },
+      "annual_cost": 0.0008659,
+      "return_impact": 0.0009847508230025337,
+      "sharpe_impact_pct": 0.6559367010081915
+    },
+    "Moderate": {
+      "metrics": {
+        "sharpe": 1.8885237398271633,
+        "return": 0.137758553983502,
+        "vol": 0.06963899175486933,
+        "mdd": -0.06447762065702775
+      },
+      "annual_cost": 0.0004948,
+      "return_impact": 0.0005628186989814488,
+      "sharpe_impact_pct": 0.37482097200466247
+    },
+    "Optimistic": {
+      "metrics": {
+        "sharpe": 1.8920763472639692,
+        "return": 0.138039928678249,
+        "vol": 0.06963899175486933,
+        "mdd": -0.06445459662456104
+      },
+      "annual_cost": 0.0002474,
+      "return_impact": 0.0002814440042344657,
+      "sharpe_impact_pct": 0.18741048600231364
+    }
+  },
+  "baseline": {
+    "sharpe": 1.8956289547007745,
+    "return": 0.13832137268248346,
+    "vol": 0.06963899175486933,
+    "mdd": -0.06443157204812164
+  },
+  "conclusion": "PASS"
+}

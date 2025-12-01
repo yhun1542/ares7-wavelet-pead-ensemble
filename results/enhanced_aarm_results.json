@@ -1,0 +1,37 @@
+{
+  "timestamp": "2025-11-28T10:30:44.124064",
+  "optimal_params": {
+    "base": 0.9,
+    "max": 1.8,
+    "cost": 0.001
+  },
+  "performance_train": {
+    "annualized_return": 0.43375777098242385,
+    "annualized_volatility": 0.17600940911571206,
+    "sharpe_ratio": 2.464401040612908,
+    "sortino_ratio": 4.926963079830482,
+    "max_drawdown": -0.1253828849625007,
+    "cvar_95": -0.016979371031137544,
+    "params": {
+      "base": 0.9,
+      "max": 1.8,
+      "cost": 0.001
+    }
+  },
+  "performance_oos": {
+    "annualized_return": 0.4359316930848003,
+    "annualized_volatility": 0.1089976208928616,
+    "sharpe_ratio": 3.9994606259644523,
+    "sortino_ratio": 6.073129805925139,
+    "max_drawdown": -0.073826693417395,
+    "cvar_95": -0.013736836705430685
+  },
+  "performance_full": {
+    "annualized_return": 0.4344097795096833,
+    "annualized_volatility": 0.1588739534077123,
+    "sharpe_ratio": 2.734304586698826,
+    "sortino_ratio": 5.201731217907607,
+    "max_drawdown": -0.1253828849625007,
+    "cvar_95": -0.016106816030071257
+  }
+}

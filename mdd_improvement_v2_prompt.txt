@@ -1,0 +1,48 @@
+You are a quantitative strategy optimization expert. We previously implemented MDD improvement techniques (Volatility Targeting + Drawdown-Based Regime Switch) that successfully reduced MDD from -23.62% to -9.67%, but the annualized return dropped from 58.59% to 45.55%. This is unacceptable.
+
+## Current Situation
+
+**Before MDD Improvement:**
+- Sharpe Ratio: 2.83
+- Annualized Return: 58.59%
+- Annualized Volatility: 20.72%
+- MDD: -23.62%
+- CVaR (95%): 0.0227
+
+**After MDD Improvement (Current Problem):**
+- Sharpe Ratio: 3.26 (✓ Improved)
+- Annualized Return: 45.55% (✗ Too much reduction)
+- Annualized Volatility: 13.98% (✓ Reduced)
+- MDD: -9.67% (✓ Target achieved)
+- CVaR (95%): 0.0159 (✓ Improved)
+
+## Problem
+
+The annualized return dropped by 13.04% (from 58.59% to 45.55%), which is too much. We need to maintain or improve the annualized return while keeping MDD below -10%.
+
+## Requirements
+
+1. **Maintain or improve annualized return** (target: 58%+)
+2. **Keep MDD below -10%** (already achieved at -9.67%)
+3. **Maintain or improve Sharpe Ratio** (currently 3.26)
+4. **Keep CVaR low** (currently 0.0159)
+
+## Question
+
+How can we modify the MDD improvement approach to recover the lost returns while maintaining the MDD improvement? Please provide:
+
+1. **Root cause analysis**: Why did returns drop so much?
+2. **Proposed solution**: Specific techniques to recover returns
+3. **Python code**: Complete, immediately usable implementation
+4. **Expected impact**: Quantitative estimates of the improvement
+
+## Possible Approaches (or propose better ones)
+
+- Asymmetric position sizing (reduce only on downside, not upside)
+- Trend-following overlay to capture upside momentum
+- Dynamic leverage adjustment (increase exposure during favorable conditions)
+- Selective drawdown protection (protect only during severe market stress)
+- Return stacking or portable alpha techniques
+- Other innovative methods
+
+Please provide **concrete Python code** that can be integrated into our existing framework.

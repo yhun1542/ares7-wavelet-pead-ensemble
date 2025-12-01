@@ -1,0 +1,26 @@
+{
+  "baseline_metrics": {
+    "sharpe": 1.9754,
+    "return": 0.1559,
+    "vol": 0.0748,
+    "mdd": -0.0685,
+    "win_rate": 0.549,
+    "calmar": 2.28,
+    "sortino": 3.36
+  },
+  "final_metrics": {
+    "sharpe": 2.2638,
+    "return": 0.1642,
+    "vol": 0.0682,
+    "mdd": -0.0584,
+    "win_rate": 0.5622,
+    "calmar": 2.81,
+    "sortino": 3.72
+  },
+  "best_params": {
+    "target_vol": 0.06,
+    "lookback": 20
+  },
+  "improvement_pct": 14.6,
+  "sharpe_2_achieved": true
+}

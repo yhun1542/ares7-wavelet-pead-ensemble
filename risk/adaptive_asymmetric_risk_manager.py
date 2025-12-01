@@ -1,0 +1,326 @@
+import numpy as np
+import pandas as pd
+from scipy.stats import norm
+from typing import Tuple, Dict
+
+class AdaptiveAsymmetricRiskManager:
+    """
+    Advanced risk management system that maintains returns while controlling drawdowns
+    """
+    
+    def __init__(self, 
+                 base_leverage: float = 1.0,
+                 max_leverage: float = 2.0,
+                 target_vol: float = 0.20,
+                 max_dd_threshold: float = -0.10,
+                 lookback_days: int = 60):
+        """
+        Parameters:
+        -----------
+        base_leverage: Base position sizing multiplier
+        max_leverage: Maximum allowed leverage
+        target_vol: Target annualized volatility
+        max_dd_threshold: Maximum drawdown threshold
+        lookback_days: Lookback period for calculations
+        """
+        self.base_leverage = base_leverage
+        self.max_leverage = max_leverage
+        self.target_vol = target_vol
+        self.max_dd_threshold = max_dd_threshold
+        self.lookback_days = lookback_days
+        
+    def calculate_downside_volatility(self, returns: pd.Series, threshold: float = 0) -> float:
+        """Calculate downside deviation (semi-deviation)"""
+        downside_returns = returns[returns < threshold]
+        if len(downside_returns) < 2:
+            return returns.std()
+        return np.sqrt(np.mean(downside_returns**2)) * np.sqrt(252)
+    
+    def calculate_upside_volatility(self, returns: pd.Series, threshold: float = 0) -> float:
+        """Calculate upside deviation"""
+        upside_returns = returns[returns > threshold]
+        if len(upside_returns) < 2:
+            return returns.std()
+        return upside_returns.std() * np.sqrt(252)
+    
+    def calculate_sortino_ratio(self, returns: pd.Series, risk_free_rate: float = 0) -> float:
+        """Calculate Sortino ratio for momentum signal"""
+        excess_returns = returns - risk_free_rate/252
+        downside_vol = self.calculate_downside_volatility(returns)
+        if downside_vol == 0:
+            return 0
+        return (excess_returns.mean() * 252) / downside_vol
+    
+    def kelly_criterion_leverage(self, returns: pd.Series, confidence: float = 0.25) -> float:
+        """
+        Calculate optimal leverage using Kelly Criterion with safety margin
+        confidence: fraction of Kelly to use (0.25 = quarter Kelly)
+        """
+        if len(returns) < 20:
+            return self.base_leverage
+            
+        # Calculate win rate and win/loss ratio
+        winning_returns = returns[returns > 0]
+        losing_returns = returns[returns < 0]
+        
+        if len(winning_returns) == 0 or len(losing_returns) == 0:
+            return self.base_leverage
+            
+        win_rate = len(winning_returns) / len(returns)
+        avg_win = winning_returns.mean()
+        avg_loss = abs(losing_returns.mean())
+        
+        if avg_loss == 0:
+            return self.base_leverage
+            
+        # Kelly formula: f = (p*b - q) / b
+        # where p = win rate, q = loss rate, b = win/loss ratio
+        b = avg_win / avg_loss
+        kelly_fraction = (win_rate * b - (1 - win_rate)) / b
+        
+        # Apply confidence factor and constraints
+        optimal_leverage = kelly_fraction * confidence
+        return np.clip(optimal_leverage, 0.5, self.max_leverage)
+    
+    def momentum_signal(self, prices: pd.Series, fast: int = 20, slow: int = 60) -> float:
+        """
+        Generate momentum signal for trend following
+        Returns value between -1 and 1
+        """
+        if len(prices) < slow:
+            return 0
+            
+        # Multiple timeframe momentum
+        ret_fast = prices.iloc[-1] / prices.iloc[-fast] - 1
+        ret_slow = prices.iloc[-1] / prices.iloc[-slow] - 1
+        
+        # Normalize signals
+        signal = 0.7 * np.tanh(ret_fast * 10) + 0.3 * np.tanh(ret_slow * 10)
+        return signal
+    
+    def drawdown_multiplier(self, current_dd: float) -> float:
+        """
+        Progressive drawdown-based position adjustment
+        Returns multiplier between 0 and 1
+        """
+        if current_dd >= 0:
+            return 1.0
+        
+        # Progressive reduction based on drawdown severity
+        if current_dd > -0.05:  # Small drawdown: minimal reduction
+            return 1.0 - (abs(current_dd) * 2)  # 0-10% reduction
+        elif current_dd > -0.10:  # Medium drawdown: moderate reduction
+            return 0.9 - (abs(current_dd) - 0.05) * 4  # 10-30% reduction
+        else:  # Large drawdown: significant reduction
+            return max(0.3, 0.7 - (abs(current_dd) - 0.10) * 3)  # 30-70% reduction
+    
+    def calculate_adaptive_position_size(self, 
+                                       returns: pd.Series,
+                                       prices: pd.Series,
+                                       current_drawdown: float) -> Dict[str, float]:
+        """
+        Main method to calculate adaptive position sizing
+        """
+        results = {}
+        
+        # 1. Asymmetric Volatility Adjustment
+        recent_returns = returns.iloc[-self.lookback_days:]
+        downside_vol = self.calculate_downside_volatility(recent_returns)
+        upside_vol = self.calculate_upside_volatility(recent_returns)
+        total_vol = recent_returns.std() * np.sqrt(252)
+        
+        # Use downside volatility for risk management
+        if downside_vol > 0:
+            vol_scalar = min(self.target_vol / downside_vol, 2.0)
+        else:
+            vol_scalar = 1.0
+            
+        # 2. Kelly Criterion Dynamic Leverage
+        kelly_leverage = self.kelly_criterion_leverage(recent_returns)
+        
+        # 3. Momentum Overlay
+        momentum = self.momentum_signal(prices)
+        momentum_multiplier = 1.0 + (momentum * 0.3)  # ±30% based on trend
+        
+        # 4. Graduated Drawdown Adjustment
+        dd_multiplier = self.drawdown_multiplier(current_drawdown)
+        
+        # 5. Regime Detection (Volatility Regime)
+        vol_percentile = np.percentile(returns.rolling(20).std().dropna(), 75)
+        current_vol = recent_returns.iloc[-20:].std()
+        
+        if current_vol > vol_percentile * 1.5:  # High volatility regime
+            regime_multiplier = 0.7
+        else:  # Normal or low volatility
+            regime_multiplier = 1.0
+        
+        # 6. Calculate Final Position Size
+        # Base position with asymmetric vol targeting
+        position_size = self.base_leverage * vol_scalar
+        
+        # Apply Kelly leverage only when favorable
+        if kelly_leverage > 1.0 and momentum > 0:
+            position_size *= kelly_leverage
+        
+        # Apply momentum overlay
+        position_size *= momentum_multiplier
+        
+        # Apply drawdown protection
+        position_size *= dd_multiplier
+        
+        # Apply regime adjustment
+        position_size *= regime_multiplier
+        
+        # Final constraints
+        position_size = np.clip(position_size, 0.1, self.max_leverage)
+        
+        # Store diagnostics
+        results['position_size'] = position_size
+        results['vol_scalar'] = vol_scalar
+        results['kelly_leverage'] = kelly_leverage
+        results['momentum'] = momentum
+        results['dd_multiplier'] = dd_multiplier
+        results['regime_multiplier'] = regime_multiplier
+        results['downside_vol'] = downside_vol
+        results['upside_vol'] = upside_vol
+        results['sortino'] = self.calculate_sortino_ratio(recent_returns)
+        
+        return results
+
+def apply_adaptive_risk_management(returns: pd.Series, 
+                                  prices: pd.Series,
+                                  initial_capital: float = 1000000) -> pd.DataFrame:
+    """
+    Apply the Adaptive Asymmetric Risk Management system to a return series
+    """
+    # Initialize manager
+    arm = AdaptiveAsymmetricRiskManager(
+        base_leverage=1.2,      # Slightly higher base leverage
+        max_leverage=2.5,       # Allow up to 2.5x in optimal conditions
+        target_vol=0.20,        # Target 20% volatility
+        max_dd_threshold=-0.10  # 10% max drawdown target
+    )
+    
+    # Calculate cumulative returns for drawdown calculation
+    cum_returns = (1 + returns).cumprod()
+    rolling_max = cum_returns.expanding().max()
+    drawdowns = (cum_returns - rolling_max) / rolling_max
+    
+    # Store results
+    results = []
+    managed_returns = []
+    
+    # Process each day
+    for i in range(arm.lookback_days, len(returns)):
+        # Get current state
+        current_returns = returns.iloc[:i+1]
+        current_prices = prices.iloc[:i+1]
+        current_dd = drawdowns.iloc[i]
+        
+        # Calculate adaptive position size
+        position_info = arm.calculate_adaptive_position_size(
+            current_returns, 
+            current_prices, 
+            current_dd
+        )
+        
+        # Apply position sizing to returns
+        managed_return = returns.iloc[i] * position_info['position_size']
+        managed_returns.append(managed_return)
+        
+        # Store diagnostic info
+        results.append({
+            'date': returns.index[i],
+            'original_return': returns.iloc[i],
+            'managed_return': managed_return,
+            'position_size': position_info['position_size'],
+            'current_drawdown': current_dd,
+            'momentum': position_info['momentum'],
+            'sortino': position_info['sortino'],
+            'downside_vol': position_info['downside_vol'],
+            'kelly_leverage': position_info['kelly_leverage']
+        })
+    
+    # Create results DataFrame
+    results_df = pd.DataFrame(results)
+    results_df.set_index('date', inplace=True)
+    
+    # Add initial period with base returns
+    initial_period = pd.DataFrame({
+        'original_return': returns.iloc[:arm.lookback_days],
+        'managed_return': returns.iloc[:arm.lookback_days] * arm.base_leverage,
+        'position_size': arm.base_leverage
+    })
+    
+    results_df = pd.concat([initial_period, results_df])
+    
+    return results_df
+
+def calculate_performance_metrics(returns: pd.Series) -> Dict[str, float]:
+    """Calculate comprehensive performance metrics"""
+    # Cumulative returns
+    cum_returns = (1 + returns).cumprod()
+    
+    # Annualized metrics
+    n_years = len(returns) / 252
+    total_return = cum_returns.iloc[-1] - 1
+    ann_return = (1 + total_return) ** (1/n_years) - 1
+    ann_vol = returns.std() * np.sqrt(252)
+    sharpe = ann_return / ann_vol if ann_vol > 0 else 0
+    
+    # Maximum drawdown
+    rolling_max = cum_returns.expanding().max()
+    drawdowns = (cum_returns - rolling_max) / rolling_max
+    max_dd = drawdowns.min()
+    
+    # CVaR (95%)
+    var_95 = returns.quantile(0.05)
+    cvar_95 = returns[returns <= var_95].mean()
+    
+    # Sortino ratio
+    downside_returns = returns[returns < 0]
+    downside_vol = downside_returns.std() * np.sqrt(252) if len(downside_returns) > 0 else 0
+    sortino = ann_return / downside_vol if downside_vol > 0 else 0
+    
+    return {
+        'annualized_return': ann_return,
+        'annualized_volatility': ann_vol,
+        'sharpe_ratio': sharpe,
+        'sortino_ratio': sortino,
+        'max_drawdown': max_dd,
+        'cvar_95': cvar_95,
+        'total_return': total_return
+    }
+
+# Example usage and testing
+if __name__ == "__main__":
+    # Generate sample data (replace with your actual data)
+    np.random.seed(42)
+    n_days = 1000
+    
+    # Simulate returns with momentum and volatility clustering
+    returns = np.random.normal(0.0003, 0.015, n_days)
+    for i in range(1, n_days):
+        if i % 100 < 20:  # Trending period
+            returns[i] += 0.001 * np.sign(returns[i-1])
+        elif i % 100 > 80:  # High volatility period
+            returns[i] *= 1.5
+    
+    returns = pd.Series(returns, index=pd.date_range('2020-01-01', periods=n_days, freq='D'))
+    prices = (1 + returns).cumprod() * 100
+    
+    # Apply adaptive risk management
+    results_df = apply_adaptive_risk_management(returns, prices)
+    
+    # Calculate metrics
+    original_metrics = calculate_performance_metrics(returns)
+    managed_metrics = calculate_performance_metrics(results_df['managed_return'])
+    
+    print("=== Performance Comparison ===")
+    print("\nOriginal Strategy:")
+    for key, value in original_metrics.items():
+        print(f"{key}: {value:.4f}")
+    
+    print("\nAdaptive Risk Management Strategy:")
+    for key, value in managed_metrics.items():
+        print(f"{key}: {value:.4f}")

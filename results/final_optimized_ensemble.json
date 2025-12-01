@@ -1,0 +1,48 @@
+{
+  "performance": {
+    "sharpe": 1.979827011637282,
+    "annual_return": 0.18281193678272922,
+    "annual_vol": 0.08672610309949606,
+    "mdd": -0.08109015939069197,
+    "win_rate": 0.5490039840637451,
+    "calmar": 2.254428134762225,
+    "sortino": 3.357261010642167,
+    "max_dd_duration": 202,
+    "total_days": 2510
+  },
+  "weights": {
+    "A+LS": 0.087,
+    "C1": 0.09,
+    "LV2": 0.117,
+    "Factor": 0.149,
+    "FV2_1": 0.429,
+    "FV2_2": 0.084,
+    "FV2_3": 0.045
+  },
+  "vol_target": {
+    "target_vol": 0.08,
+    "lookback": 30,
+    "cap": 2.0,
+    "floor": 0.5
+  },
+  "engines": [
+    "A+LS",
+    "C1",
+    "LV2",
+    "Factor",
+    "FV2_1",
+    "FV2_2",
+    "FV2_3"
+  ],
+  "baseline_performance": {
+    "sharpe": 1.8956289547007745,
+    "annual_return": 0.13832137268248346,
+    "annual_vol": 0.06963899175486933,
+    "mdd": -0.06443157204812164,
+    "win_rate": 0.5490039840637451,
+    "calmar": 2.1467949374132322,
+    "sortino": 3.0359297446126594,
+    "max_dd_duration": 225,
+    "total_days": 2510
+  }
+}

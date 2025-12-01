@@ -1,0 +1,70 @@
+{
+  "best_config": {
+    "overlay_strength": 0.04,
+    "top_frac": 0.2,
+    "bottom_frac": 0.2
+  },
+  "exposure_scale": 0.9892949327191932,
+  "target_vol": 0.12,
+  "regime_filter": "BULL only",
+  "full_sample": {
+    "baseline": {
+      "sharpe": 1.8535722886585928,
+      "sortino": 2.8297841732801357,
+      "ann_return": 0.1796416740689758,
+      "ann_vol": 0.09691646512420632,
+      "max_dd": -0.087249040276417,
+      "calmar": 2.058953009681782
+    },
+    "balanced": {
+      "sharpe": 3.40769472251909,
+      "sortino": 5.094427956600188,
+      "ann_return": 0.40892336670229085,
+      "ann_vol": 0.12000000000000001,
+      "max_dd": -0.08670681606077646,
+      "calmar": 4.716161719231614
+    }
+  },
+  "oos_results": {
+    "train": {
+      "baseline_sharpe": 1.9537624702336644,
+      "balanced_sharpe": 3.2264729244399537,
+      "delta_sharpe": 1.2727104542062893,
+      "balanced_vol": 0.11647639542941084,
+      "balanced_mdd": -0.08670681606077646,
+      "bull_pct": 73.32686711930165
+    },
+    "oos1": {
+      "baseline_sharpe": 2.3150970310572236,
+      "balanced_sharpe": 3.9385356537605856,
+      "delta_sharpe": 1.623438622703362,
+      "balanced_vol": 0.11997379599818811,
+      "balanced_mdd": -0.07393944251654772,
+      "bull_pct": 61.98019801980198
+    },
+    "oos2": {
+      "baseline_sharpe": 1.6227575710763704,
+      "balanced_sharpe": 2.8923667198082312,
+      "delta_sharpe": 1.2696091487318608,
+      "balanced_vol": 0.12597510314658583,
+      "balanced_mdd": -0.07661145544022419,
+      "bull_pct": 74.23638778220452
+    },
+    "oos3": {
+      "baseline_sharpe": 1.2243614208205102,
+      "balanced_sharpe": 2.913377965385265,
+      "delta_sharpe": 1.689016544564755,
+      "balanced_vol": 0.11577171837326654,
+      "balanced_mdd": -0.03214139359660728,
+      "bull_pct": 90.04524886877829
+    }
+  },
+  "overfitting": {
+    "train_sharpe": 3.2264729244399537,
+    "oos_min_sharpe": 2.8923667198082312,
+    "oos_avg_sharpe": 3.2480934463180273,
+    "degradation": -0.021620521878073617,
+    "degradation_pct": -0.670097731622108,
+    "all_oos_positive": true
+  }
+}

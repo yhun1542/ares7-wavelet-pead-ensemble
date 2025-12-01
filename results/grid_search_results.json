@@ -1,0 +1,28 @@
+{
+  "timestamp": "2025-11-28T10:40:45.412060",
+  "best_params": {
+    "base_leverage": 1.2,
+    "max_leverage": 2.2,
+    "target_volatility": 0.18,
+    "cb_trigger": -0.1,
+    "cb_reduction_factor": 0.7,
+    "mdd_threshold": -0.1,
+    "cb_recovery_threshold": -0.03
+  },
+  "performance": {
+    "annualized_return": 0.9870091818029612,
+    "annualized_volatility": 0.2610749103101403,
+    "sharpe_ratio": 3.780559306256037,
+    "sortino_ratio": 6.025922578834073,
+    "max_drawdown": -0.19122529776008002,
+    "cvar_95": -0.03134070030788073
+  },
+  "oos_performance": {
+    "annualized_return": 1.2363807132653601,
+    "annualized_volatility": 0.2490751467495255,
+    "sharpe_ratio": 4.963886318648593,
+    "sortino_ratio": 7.690777602637886,
+    "max_drawdown": -0.15824498647391189,
+    "cvar_95": -0.030940954269059098
+  }
+}

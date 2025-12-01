@@ -1,0 +1,48 @@
+{
+  "baseline": {
+    "name": "Baseline (ARES7-Best)",
+    "sharpe": 1.8532030143669198,
+    "sortino": 2.828499950761862,
+    "ann_return": 0.1796416740689758,
+    "ann_vol": 0.09693577696361773,
+    "max_dd": -0.087249040276417,
+    "calmar": 2.058953009681782
+  },
+  "original": {
+    "name": "Original (VIX 20+)",
+    "sharpe": 1.8529677940603337,
+    "sortino": 2.831767027142563,
+    "ann_return": 0.15570512034146647,
+    "ann_vol": 0.0840301276906039,
+    "max_dd": -0.07347533546946017,
+    "calmar": 2.1191481378970347
+  },
+  "opt_conservative": {
+    "name": "Optimized Conservative (30+)",
+    "sharpe": 1.8600731993892543,
+    "sortino": 2.875834160158413,
+    "ann_return": 0.1716217932407537,
+    "ann_vol": 0.0922661502230691,
+    "max_dd": -0.08432680694686712,
+    "calmar": 2.0351985264767545
+  },
+  "opt_moderate": {
+    "name": "Optimized Moderate (32+)",
+    "sharpe": 1.857470569091531,
+    "sortino": 2.8736678491390775,
+    "ann_return": 0.17259393489543537,
+    "ann_vol": 0.09291879923559125,
+    "max_dd": -0.08584522199360733,
+    "calmar": 2.0105246499133984
+  },
+  "opt_aggressive": {
+    "name": "Optimized Aggressive (35+)",
+    "sharpe": 1.8542852152362688,
+    "sortino": 2.868042929458887,
+    "ann_return": 0.1728633120008032,
+    "ann_vol": 0.09322369103761492,
+    "max_dd": -0.08249389861646594,
+    "calmar": 2.09546784550075
+  },
+  "best": "opt_conservative"
+}

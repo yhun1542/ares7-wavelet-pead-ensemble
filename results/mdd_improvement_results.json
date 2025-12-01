@@ -1,0 +1,160 @@
+{
+  "timestamp": "2025-11-28T10:06:35.678381",
+  "optimal_params": {
+    "target_vol": 0.12,
+    "mdd_threshold": -0.1,
+    "defensive_exposure": 0.3
+  },
+  "performance_before": {
+    "name": "Before MDD Improvement",
+    "total_return": 87.33562131767124,
+    "ann_return": 0.5859486842788058,
+    "ann_vol": 0.20722288504310932,
+    "sharpe": 2.8276253569045173,
+    "mdd": -0.23619915473174513,
+    "cvar": 0.02273236119241822,
+    "days": 3549,
+    "years": 9.716632443531827
+  },
+  "performance_after": {
+    "name": "After MDD Improvement",
+    "total_return": 37.3757843724691,
+    "ann_return": 0.45554399079768926,
+    "ann_vol": 0.13977317258974536,
+    "sharpe": 3.2591661357990156,
+    "mdd": -0.09671489548213846,
+    "cvar": 0.015900992699898038,
+    "days": 3549,
+    "years": 9.716632443531827
+  },
+  "all_param_results": [
+    {
+      "name": "Vol=0.1, MDD=-0.08, Def=0.3",
+      "total_return": 23.66519262928439,
+      "ann_return": 0.3908112896772049,
+      "ann_vol": 0.12175795555275204,
+      "sharpe": 3.209739256075835,
+      "mdd": -0.08099809378436175,
+      "cvar": 0.014223385330896782,
+      "days": 3549,
+      "years": 9.716632443531827,
+      "params": {
+        "target_vol": 0.1,
+        "mdd_threshold": -0.08,
+        "defensive_exposure": 0.3
+      }
+    },
+    {
+      "name": "Vol=0.12, MDD=-0.08, Def=0.3",
+      "total_return": 33.64133463564837,
+      "ann_return": 0.4402882033279987,
+      "ann_vol": 0.1384915214211056,
+      "sharpe": 3.179170817173941,
+      "mdd": -0.09233802762348053,
+      "cvar": 0.015822932739990442,
+      "days": 3549,
+      "years": 9.716632443531827,
+      "params": {
+        "target_vol": 0.12,
+        "mdd_threshold": -0.08,
+        "defensive_exposure": 0.3
+      }
+    },
+    {
+      "name": "Vol=0.15, MDD=-0.08, Def=0.3",
+      "total_return": 44.4481483409394,
+      "ann_return": 0.4811036691240249,
+      "ann_vol": 0.15816335846788315,
+      "sharpe": 3.0418149550214464,
+      "mdd": -0.09448950105000471,
+      "cvar": 0.01738405610040325,
+      "days": 3549,
+      "years": 9.716632443531827,
+      "params": {
+        "target_vol": 0.15,
+        "mdd_threshold": -0.08,
+        "defensive_exposure": 0.3
+      }
+    },
+    {
+      "name": "Vol=0.12, MDD=-0.06, Def=0.3",
+      "total_return": 27.97525639978791,
+      "ann_return": 0.414055515443454,
+      "ann_vol": 0.13413069957084836,
+      "sharpe": 3.086955609478114,
+      "mdd": -0.09698322062844797,
+      "cvar": 0.0153343985447764,
+      "days": 3549,
+      "years": 9.716632443531827,
+      "params": {
+        "target_vol": 0.12,
+        "mdd_threshold": -0.06,
+        "defensive_exposure": 0.3
+      }
+    },
+    {
+      "name": "Vol=0.12, MDD=-0.1, Def=0.3",
+      "total_return": 37.3757843724691,
+      "ann_return": 0.45554399079768926,
+      "ann_vol": 0.13977317258974536,
+      "sharpe": 3.2591661357990156,
+      "mdd": -0.09671489548213846,
+      "cvar": 0.015900992699898038,
+      "days": 3549,
+      "years": 9.716632443531827,
+      "params": {
+        "target_vol": 0.12,
+        "mdd_threshold": -0.1,
+        "defensive_exposure": 0.3
+      }
+    },
+    {
+      "name": "Vol=0.12, MDD=-0.08, Def=0.2",
+      "total_return": 33.13277657245002,
+      "ann_return": 0.4380976359054103,
+      "ann_vol": 0.13843077734357787,
+      "sharpe": 3.164741572013824,
+      "mdd": -0.09174728834376433,
+      "cvar": 0.015822932739990442,
+      "days": 3549,
+      "years": 9.716632443531827,
+      "params": {
+        "target_vol": 0.12,
+        "mdd_threshold": -0.08,
+        "defensive_exposure": 0.2
+      }
+    },
+    {
+      "name": "Vol=0.12, MDD=-0.08, Def=0.4",
+      "total_return": 34.15602229531553,
+      "ann_return": 0.4424759947340031,
+      "ann_vol": 0.13858302431684272,
+      "sharpe": 3.192858554756094,
+      "mdd": -0.09293743038330839,
+      "cvar": 0.015822932739990442,
+      "days": 3549,
+      "years": 9.716632443531827,
+      "params": {
+        "target_vol": 0.12,
+        "mdd_threshold": -0.08,
+        "defensive_exposure": 0.4
+      }
+    },
+    {
+      "name": "Vol=0.12, MDD=-0.08, Def=0.5",
+      "total_return": 34.67689145571142,
+      "ann_return": 0.4446610020722803,
+      "ann_vol": 0.1387052251566517,
+      "sharpe": 3.205798495118598,
+      "mdd": -0.09354548092807581,
+      "cvar": 0.015822932739990442,
+      "days": 3549,
+      "years": 9.716632443531827,
+      "params": {
+        "target_vol": 0.12,
+        "mdd_threshold": -0.08,
+        "defensive_exposure": 0.5
+      }
+    }
+  ]
+}

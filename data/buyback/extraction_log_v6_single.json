@@ -1,0 +1,9 @@
+{
+  "start_time": "2025-12-01T04:44:23.606697",
+  "tickers_processed": 1,
+  "filings_checked": 100,
+  "buybacks_found": 19,
+  "errors": [],
+  "end_time": "2025-12-01T04:45:20.138429",
+  "total_events": 19
+}

@@ -1,0 +1,178 @@
+To address the problem of reduced returns while maintaining the MDD improvement, let's approach this step-by-step:
+
+## 1. Root Cause Analysis
+
+The significant drop in annualized return (from 58.59% to 45.55%) after implementing MDD improvement techniques can be attributed to:
+
+1. **Overly conservative position sizing**: The Volatility Targeting and Drawdown-Based Regime Switch likely reduced exposure too aggressively, leading to missed opportunities during market upswings.
+
+2. **Loss of upside capture**: The techniques focused on reducing downside risk but may have also limited upside potential.
+
+3. **Increased transaction costs**: More frequent adjustments in position sizing and regime switching could have led to higher transaction costs, eating into returns.
+
+## 2. Proposed Solution
+
+To recover the lost returns while maintaining MDD below -10%, we'll implement the following techniques:
+
+1. **Asymmetric Position Sizing**: We'll reduce exposure only on the downside, maintaining or increasing exposure on the upside.
+
+2. **Trend-Following Overlay**: We'll add a simple moving average crossover system to capture upside momentum.
+
+3. **Dynamic Leverage Adjustment**: We'll increase exposure during favorable market conditions, defined by low volatility and positive trends.
+
+These techniques should help recover returns while maintaining the MDD improvement.
+
+## 3. Python Code
+
+Here's the complete, immediately usable Python code implementing these techniques:
+
+```python
+import numpy as np
+import pandas as pd
+
+class EnhancedStrategy:
+    def __init__(self, initial_capital=100000, target_volatility=0.1, mdd_threshold=-0.1):
+        self.initial_capital = initial_capital
+        self.target_volatility = target_volatility
+        self.mdd_threshold = mdd_threshold
+        self.equity_curve = [initial_capital]
+        self.position_size = 1.0
+        self.regime = 'normal'
+        self.leverage = 1.0
+
+    def run_strategy(self, returns, short_ma=50, long_ma=200):
+        """
+        Run the enhanced strategy with asymmetric position sizing, trend-following overlay,
+        and dynamic leverage adjustment.
+        
+        Args:
+        returns (pd.Series): Daily returns of the strategy
+        short_ma (int): Short-term moving average window
+        long_ma (int): Long-term moving average window
+        
+        Returns:
+        pd.DataFrame: Results including equity curve, position size, regime, and leverage
+        """
+        results = pd.DataFrame(index=returns.index, columns=['equity', 'position_size', 'regime', 'leverage'])
+        
+        for i in range(len(returns)):
+            if i == 0:
+                results.iloc[i] = [self.initial_capital, self.position_size, self.regime, self.leverage]
+                continue
+            
+            # Calculate daily return
+            daily_return = returns.iloc[i]
+            
+            # Calculate MDD
+            mdd = self.calculate_mdd(results['equity'].iloc[:i+1])
+            
+            # Asymmetric Position Sizing
+            if mdd < self.mdd_threshold:
+                self.position_size = 1.0  # Maintain full exposure on upside
+            else:
+                self.position_size = 0.5  # Reduce exposure on downside
+            
+            # Trend-Following Overlay
+            short_ma_value = results['equity'].iloc[:i+1].rolling(window=short_ma).mean().iloc[-1]
+            long_ma_value = results['equity'].iloc[:i+1].rolling(window=long_ma).mean().iloc[-1]
+            
+            if short_ma_value > long_ma_value:
+                self.regime = 'bull'
+            else:
+                self.regime = 'bear'
+            
+            # Dynamic Leverage Adjustment
+            recent_volatility = returns.iloc[max(0, i-20):i+1].std() * np.sqrt(252)
+            if self.regime == 'bull' and recent_volatility < self.target_volatility:
+                self.leverage = min(2.0, self.target_volatility / recent_volatility)  # Up to 2x leverage
+            else:
+                self.leverage = 1.0
+            
+            # Calculate new equity
+            new_equity = results['equity'].iloc[i-1] * (1 + daily_return * self.position_size * self.leverage)
+            
+            results.iloc[i] = [new_equity, self.position_size, self.regime, self.leverage]
+        
+        return results
+
+    def calculate_mdd(self, equity_curve):
+        """
+        Calculate Maximum Drawdown (MDD) from an equity curve.
+        
+        Args:
+        equity_curve (pd.Series): Equity curve
+        
+        Returns:
+        float: Maximum Drawdown
+        """
+        cummax = equity_curve.cummax()
+        drawdown = (equity_curve - cummax) / cummax
+        return drawdown.min()
+
+    def calculate_performance(self, results):
+        """
+        Calculate performance metrics from strategy results.
+        
+        Args:
+        results (pd.DataFrame): Strategy results
+        
+        Returns:
+        dict: Performance metrics
+        """
+        equity = results['equity']
+        returns = equity.pct_change().dropna()
+        
+        annualized_return = (equity.iloc[-1] / equity.iloc[0]) ** (252/len(returns)) - 1
+        annualized_volatility = returns.std() * np.sqrt(252)
+        sharpe_ratio = annualized_return / annualized_volatility
+        mdd = self.calculate_mdd(equity)
+        cvar = returns.quantile(0.05)
+        
+        return {
+            'Annualized Return': annualized_return,
+            'Annualized Volatility': annualized_volatility,
+            'Sharpe Ratio': sharpe_ratio,
+            'MDD': mdd,
+            'CVaR (95%)': cvar
+        }
+
+# Example usage
+if __name__ == "__main__":
+    # Generate sample returns (replace with actual strategy returns)
+    np.random.seed(42)
+    sample_returns = pd.Series(np.random.normal(0.001, 0.02, 252))
+    
+    strategy = EnhancedStrategy()
+    results = strategy.run_strategy(sample_returns)
+    performance = strategy.calculate_performance(results)
+    
+    print("Performance Metrics:")
+    for key, value in performance.items():
+        print(f"{key}: {value:.4f}")
+    
+    print("\nStrategy Results:")
+    print(results.tail())
+```
+
+## 4. Expected Impact
+
+The expected impact of these modifications can be estimated as follows:
+
+1. **Annualized Return**: We expect an increase from 45.55% to around 55-60%. The asymmetric position sizing and trend-following overlay should capture more upside, while the dynamic leverage adjustment will increase exposure during favorable conditions.
+
+2. **MDD**: We expect to maintain MDD below -10%, as the asymmetric position sizing will still reduce exposure during drawdowns, and the leverage is limited to 2x.
+
+3. **Sharpe Ratio**: We expect to maintain or slightly improve the Sharpe Ratio (currently 3.26). The increased return should offset any potential increase in volatility.
+
+4. **CVaR**: We expect to maintain a low CVaR (currently 0.0159). The asymmetric position sizing and drawdown protection will continue to limit downside risk.
+
+These estimates are based on the proposed techniques and their expected behavior. Actual results may vary depending on the specific characteristics of your strategy and market conditions.
+
+To implement this solution:
+
+1. Integrate the `EnhancedStrategy` class into your existing framework.
+2. Replace the sample returns with your actual strategy returns.
+3. Adjust the parameters (e.g., `target_volatility`, `mdd_threshold`, `short_ma`, `long_ma`) to optimize performance for your specific strategy.
+4. Monitor the strategy's performance and make further adjustments as needed.
+
+This approach should help you recover the lost returns while maintaining the MDD improvement. Regular monitoring and fine-tuning will be necessary to ensure optimal performance.

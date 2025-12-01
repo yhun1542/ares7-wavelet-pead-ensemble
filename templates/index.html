@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ARES ALPHA (v2.5 - REAL DATA)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* Typography */
+        :root {
+            --bg-app: #0b0c10;
+            --bg-panel: #14161b;
+            --border: #2a2e38;
+            --border-light: rgba(255,255,255,0.08);
+            
+            --text-primary: #ffffff;
+            --text-secondary: #aab2bd;
+            --text-label: #656d78;
+            
+            --accent-primary: #00bcd4; 
+            
+            --color-up: #ff4757;       
+            --color-down: #2e86de;     
+            --color-safe: #2ecc71;
+            --color-warn: #f1c40f;
+            --color-danger: #ff6b6b;
+
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow-y: auto;
+            font-size: 16px;
+        }
+
+        .app-container {
+            max-width: 1920px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+        }
+
+        /* Header */
+        header {
+            grid-column: span 12;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .brand { 
+            font-size: 2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .brand::before {
+            content: '';
+            display: block;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--accent-primary);
+        }
+
+        /* Panel */
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+
+        .panel-title {
+            font-size: 0.9rem;
+            color: var(--text-label);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Hero metrics */
+        .hero-metric {
+            grid-column: span 4;
+        }
+
+        .hero-val {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 8px 0;
+        }
+
+        .hero-val.up { color: var(--color-up); }
+        .hero-val.down { color: var(--color-down); }
+
+        /* Chart */
+        .chart-panel {
+            grid-column: span 8;
+            height: 400px;
+        }
+
+        /* Stats */
+        .stats-panel {
+            grid-column: span 4;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .stat-label {
+            color: var(--text-label);
+            font-size: 0.9rem;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Table */
+        .table-panel {
+            grid-column: span 6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 8px;
+            color: var(--text-label);
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px 8px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .up { color: var(--color-up); }
+        .down { color: var(--color-down); }
+
+        /* Footer */
+        .footer-bar {
+            grid-column: span 12;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-top: 1px solid var(--border);
+            margin-top: 20px;
+        }
+
+        .status-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--color-safe);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .ks-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        button {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .btn-halt {
+            background: var(--color-danger);
+            border-color: var(--color-danger);
+            color: #fff;
+        }
+
+        .error-message {
+            grid-column: span 12;
+            background: var(--color-danger);
+            color: #fff;
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="brand">ARES ALPHA v2.5</div>
+            <div style="color: var(--text-label);">WAVELET + PEAD | REAL DATA ONLY</div>
+        </header>
+
+        <div id="error-container"></div>
+
+        <div class="panel hero-metric">
+            <div class="panel-title">LEVERAGE</div>
+            <div class="hero-val" id="lev-val">-</div>
+        </div>
+
+        <div class="panel hero-metric">
+            <div class="panel-title">NET EXPOSURE</div>
+            <div class="hero-val" id="net-exp">-</div>
+        </div>
+
+        <div class="panel hero-metric">
+            <div class="panel-title">GROSS EXPOSURE</div>
+            <div class="hero-val" id="gross-exp">-</div>
+        </div>
+
+        <div class="panel stats-panel">
+            <div class="panel-title">PORTFOLIO STATS</div>
+            <div class="stat-row">
+                <span class="stat-label">Regime</span>
+                <span class="stat-value" id="regime-val">-</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Kill Switch</span>
+                <span class="stat-value" id="ks-val">-</span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-label">Last Update</span>
+                <span class="stat-value" id="last-update">-</span>
+            </div>
+        </div>
+
+        <div class="panel table-panel">
+            <div class="panel-title">TOP POSITIONS (BY WEIGHT)</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>SYMBOL</th>
+                        <th>WEIGHT</th>
+                        <th>BASE</th>
+                        <th>TILT</th>
+                    </tr>
+                </thead>
+                <tbody id="pos-tbody"></tbody>
+            </table>
+        </div>
+
+        <div class="panel table-panel">
+            <div class="panel-title">ALL WEIGHTS</div>
+            <div style="max-height: 400px; overflow-y: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>SYMBOL</th>
+                            <th>FINAL</th>
+                            <th>BASE</th>
+                            <th>TILT</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all-weights-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer-bar">
+            <div class="status-group">
+                <div class="status-dot"></div>
+                <span>SYSTEM: <span id="ks-display">-</span></span>
+            </div>
+            
+            <div class="ks-controls">
+                <button onclick="setKillSwitch('RUNNING')">NORMAL</button>
+                <button onclick="setKillSwitch('STOP_NEW_ORDERS')">PAUSE</button>
+                <button class="btn-halt" onclick="emergencyExit()">HALT</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fmtPct = n => (n * 100).toFixed(2) + '%';
+        const getColorClass = n => n > 0 ? 'up' : (n < 0 ? 'down' : '');
+
+        let currentData = null;
+
+        function showError(message) {
+            const container = document.getElementById('error-container');
+            container.innerHTML = `<div class="error-message">${message}</div>`;
+        }
+
+        function clearError() {
+            document.getElementById('error-container').innerHTML = '';
+        }
+
+        function render(data) {
+            if (!data) return;
+            
+            currentData = data;
+            clearError();
+
+            // Update metrics
+            document.getElementById('lev-val').innerText = data.current_leverage.toFixed(2) + 'x';
+            document.getElementById('net-exp').innerText = fmtPct(data.net_exposure);
+            document.getElementById('gross-exp').innerText = fmtPct(data.gross_exposure);
+            
+            document.getElementById('regime-val').innerText = data.regime || '-';
+            document.getElementById('ks-val').innerText = data.kill_switch || '-';
+            document.getElementById('last-update').innerText = new Date().toLocaleTimeString();
+            document.getElementById('ks-display').innerText = data.kill_switch || '-';
+
+            // Top positions
+            const posBody = document.getElementById('pos-tbody');
+            if (data.top_positions && data.top_positions.length > 0) {
+                posBody.innerHTML = data.top_positions.map(p => `
+                    <tr>
+                        <td><strong>${p.symbol}</strong></td>
+                        <td>${fmtPct(p.weight)}</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                `).join('');
+            } else {
+                posBody.innerHTML = '<tr><td colspan="4">No data</td></tr>';
+            }
+        }
+
+        async function loadWeights() {
+            try {
+                const response = await fetch('/weights');
+                if (!response.ok) {
+                    const error = await response.json();
+                    showError(error.message || 'Failed to load weights');
+                    return;
+                }
+                
+                const weights = await response.json();
+                
+                const tbody = document.getElementById('all-weights-tbody');
+                tbody.innerHTML = weights.map(w => `
+                    <tr>
+                        <td><strong>${w.symbol}</strong></td>
+                        <td>${fmtPct(w.weight_final)}</td>
+                        <td>${fmtPct(w.weight_base)}</td>
+                        <td class="${getColorClass(w.tilt_final)}">${fmtPct(w.tilt_final)}</td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Error loading weights:', err);
+            }
+        }
+
+        async function setKillSwitch(mode) {
+            try {
+                const response = await fetch('/kill_switch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mode: mode })
+                });
+                const result = await response.json();
+                console.log("KS ->", result);
+            } catch (err) {
+                console.error("Kill switch error:", err);
+            }
+        }
+        
+        function emergencyExit() { 
+            if (confirm("CONFIRM HALT?")) {
+                setKillSwitch('FULL_EXIT');
+            }
+        }
+
+        async function fetchStatus() {
+            try {
+                const response = await fetch('/status');
+                if (!response.ok) {
+                    const error = await response.json();
+                    showError(error.message || 'Failed to fetch status');
+                    return;
+                }
+                
+                const data = await response.json();
+                render(data);
+            } catch (err) {
+                console.error("Fetch status error:", err);
+                showError('API connection failed. Is dashboard_api.py running?');
+            }
+        }
+
+        // Initial load
+        fetchStatus();
+        loadWeights();
+        
+        // Update every 5 seconds
+        setInterval(fetchStatus, 5000);
+        setInterval(loadWeights, 10000);
+    </script>
+</body>
+</html>

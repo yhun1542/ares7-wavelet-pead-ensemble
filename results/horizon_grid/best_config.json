@@ -1,0 +1,11 @@
+{
+  "tilt_size": 0.015,
+  "horizon": 30,
+  "fee_rate": 0.0005,
+  "full_sharpe": 0.42978653716616627,
+  "train_sharpe": 0.06298041532547657,
+  "val_sharpe": 0.08562011979378785,
+  "test_sharpe": 2.146450728720735,
+  "estimated_turnover": 269.73231907894734,
+  "all_positive": true
+}

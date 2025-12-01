@@ -1,0 +1,80 @@
+To address the problem of reduced annualized returns after implementing MDD improvement techniques, we'll conduct a root cause analysis and propose a solution with an implementation in Python.
+
+### 1. Root Cause Analysis
+
+The significant drop in annualized returns can be attributed to the conservative nature of the MDD improvement techniques (volatility targeting and drawdown-based regime switch), which may have overly reduced exposure during potential high-return periods. Specifically:
+
+- **Volatility Targeting** might have reduced exposure during periods of high volatility, which often accompany high returns in certain market environments.
+- **Drawdown-Based Regime Switch** could have limited exposure during recoveries from drawdowns, missing out on the upside potential.
+
+### 2. Proposed Solution
+
+To recover the lost returns while maintaining MDD improvement, we'll implement a more dynamic strategy that involves:
+
+- **Asymmetric Position Sizing**: Increase exposure more aggressively in upward trends while maintaining a conservative approach in downward trends.
+- **Dynamic Leverage Adjustment**: Use leverage dynamically based on market conditions to capture upside potential without significantly increasing risk.
+- **Trend-Following Overlay**: Add a trend-following component to capture upward momentum more effectively.
+
+### 3. Python Code Implementation
+
+Below is a Python implementation that applies these concepts. We'll assume you have a historical returns data series (`returns`) and will modify position sizes based on a combination of volatility and trend signals.
+
+```python
+import numpy as np
+import pandas as pd
+
+def calculate_volatility_target(returns, target_vol=0.15, lookback=21):
+    # Calculate realized volatility
+    realized_vol = returns.rolling(lookback).std() * np.sqrt(252)
+    # Calculate position size based on target volatility
+    position_size = target_vol / realized_vol
+    position_size = position_size.clip(upper=1.0)  # Restrict max position size to 1.0
+    return position_size
+
+def calculate_trend_signal(returns, lookback=50):
+    # Simple moving average crossover as a trend signal
+    short_ma = returns.rolling(lookback // 2).mean()
+    long_ma = returns.rolling(lookback).mean()
+    trend_signal = (short_ma > long_ma).astype(int)
+    return trend_signal
+
+def apply_dynamic_leverage(returns, position_size, trend_signal, max_leverage=2.0):
+    # Dynamically adjust leverage based on trend signal
+    dynamic_exposure = position_size * (1 + trend_signal * (max_leverage - 1))
+    return returns * dynamic_exposure.shift(1)
+
+def optimize_strategy(returns):
+    # Calculate position size based on volatility targeting
+    position_size = calculate_volatility_target(returns)
+    # Calculate trend signal
+    trend_signal = calculate_trend_signal(returns)
+    # Apply dynamic leverage
+    optimized_returns = apply_dynamic_leverage(returns, position_size, trend_signal)
+    return optimized_returns
+
+# Assuming `returns` is your historical returns data as a pandas Series
+optimized_returns = optimize_strategy(returns)
+
+# Evaluate performance
+annualized_return = optimized_returns.mean() * 252
+annualized_volatility = optimized_returns.std() * np.sqrt(252)
+mdd = (optimized_returns.cumsum().cummax() - optimized_returns.cumsum()).max()
+sharpe_ratio = annualized_return / annualized_volatility
+cvar_95 = optimized_returns[optimized_returns < optimized_returns.quantile(0.05)].mean()
+
+print(f"Annualized Return: {annualized_return:.2%}")
+print(f"Annualized Volatility: {annualized_volatility:.2%}")
+print(f"Max Drawdown: {mdd:.2%}")
+print(f"Sharpe Ratio: {sharpe_ratio:.2f}")
+print(f"CVaR (95%): {cvar_95:.4f}")
+```
+
+### 4. Expected Impact
+
+**Quantitative estimates of improvement**:
+- **Annualized Return**: Expected to recover to ~58% based on increased exposure during upward trends.
+- **Max Drawdown (MDD)**: Expected to remain below -10% due to conservative sizing during drawdowns.
+- **Sharpe Ratio**: Likely to maintain or improve slightly depending on market conditions.
+- **CVaR**: Expected to stay low due to the asymmetric risk-taking approach.
+
+The proposed solution aims to balance risk and reward more effectively, targeting higher returns without significantly compromising on drawdown protection. Adjust the parameters (e.g., `target_vol`, `lookback`) based on your specific data and risk appetite for optimal results.
